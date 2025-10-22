@@ -1,0 +1,32 @@
+name: Auto Commit from ChatGPT
+
+on:
+  workflow_dispatch:   # You can trigger this manually from the Actions tab
+
+jobs:
+  commit-code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
+      - name: Make changes or copy new code (optional)
+        run: |
+          # Example: copy files or run your script here
+          # cp -r generated_code/* ./src/
+          echo "Auto commit triggered at $(date)" >> auto_commit_log.txt
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git diff --cached --quiet || git commit -m "Auto commit from ChatGPT workflow"
+          git push
